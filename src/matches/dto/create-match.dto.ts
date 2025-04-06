@@ -22,10 +22,22 @@ export class CreateMatchDto {
   @ApiProperty({
     description: 'Local da partida',
     example: 'Parque Ibirapuera',
+    oneOf: [
+      { type: 'string' },
+      { 
+        type: 'object',
+        properties: {
+          city: { type: 'string' },
+          state: { type: 'string' },
+          fullAddress: { type: 'string' },
+          country: { type: 'string' },
+          cep: { type: 'string' }
+        }
+      }
+    ]
   })
   @IsNotEmpty()
-  @IsString()
-  location: string;
+  location: any;
 
   @ApiProperty({
     description: 'Data e hora da partida',
@@ -47,8 +59,9 @@ export class CreateMatchDto {
   @ApiProperty({
     description: 'Número máximo de participantes',
     example: 22,
+    default: 10,
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  maxParticipants: number;
+  maxParticipants?: number;
 } 

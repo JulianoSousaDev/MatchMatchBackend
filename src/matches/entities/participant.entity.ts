@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
+import { Match } from './match.entity';
 
 @Entity()
 export class Participant {
@@ -58,7 +59,19 @@ export class Participant {
   @Column({ type: 'datetime', nullable: true })
   cancelledAt: Date | null;
 
+  @ApiProperty({
+    description: 'Usuário participante',
+    type: () => User
+  })
   @ManyToOne(() => User)
   @JoinColumn({ name: 'userId' })
   user: User;
+
+  @ApiProperty({
+    description: 'Partida relacionada',
+    type: () => Match
+  })
+  @ManyToOne(() => Match, match => match.participants)
+  @JoinColumn({ name: 'matchId' })
+  match: Match;
 } 

@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Req } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Req, Query } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { MatchesService } from './matches.service';
 import { Match } from './entities/match.entity';
 import { Participant } from './entities/participant.entity';
@@ -21,6 +21,50 @@ export class MatchesController {
   @ApiResponse({ status: 200, description: 'Lista de partidas retornada com sucesso', type: [Match] })
   findAll(): Promise<Match[]> {
     return this.matchesService.findAll();
+  }
+
+  @Get('my-matches')
+  @ApiOperation({ summary: 'Listar todas as partidas que um usuário participa ou foi convidado' })
+  @ApiResponse({ status: 200, description: 'Lista de partidas do usuário', type: [Match] })
+  @ApiQuery({ 
+    name: 'status', 
+    required: false, 
+    isArray: true,
+    description: 'Filtra por status de participação (PENDING, CONFIRMED, CANCELLED)',
+  })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  findUserMatches(@Req() req, @Query('status') status?: string[]): Promise<Match[]> {
+    return this.matchesService.findUserMatches(req.user.id, status);
+  }
+
+  @Get('sports')
+  @ApiOperation({ summary: 'Listar todos os esportes' })
+  @ApiResponse({ status: 200, description: 'Lista de esportes retornada com sucesso', type: [Sport] })
+  findAllSports(): Promise<Sport[]> {
+    return this.matchesService.findAllSports();
+  }
+
+  @Post('sports')
+  @ApiOperation({ summary: 'Criar um novo esporte' })
+  @ApiResponse({ status: 201, description: 'Esporte criado com sucesso', type: Sport })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  createSport(@Body() createSportDto: CreateSportDto): Promise<Sport> {
+    return this.matchesService.createSport(createSportDto);
+  }
+
+  @Put('participants/:id')
+  @ApiOperation({ summary: 'Atualizar um participante existente' })
+  @ApiResponse({ status: 200, description: 'Participante atualizado com sucesso', type: Participant })
+  @ApiResponse({ status: 404, description: 'Participante não encontrado' })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  updateParticipant(
+    @Param('id') id: string,
+    @Body() updateParticipantDto: UpdateParticipantDto,
+  ): Promise<Participant> {
+    return this.matchesService.updateParticipant(id, updateParticipantDto);
   }
 
   @Get(':id')
@@ -60,22 +104,6 @@ export class MatchesController {
     return this.matchesService.remove(id);
   }
 
-  @Get('sports')
-  @ApiOperation({ summary: 'Listar todos os esportes' })
-  @ApiResponse({ status: 200, description: 'Lista de esportes retornada com sucesso', type: [Sport] })
-  findAllSports(): Promise<Sport[]> {
-    return this.matchesService.findAllSports();
-  }
-
-  @Post('sports')
-  @ApiOperation({ summary: 'Criar um novo esporte' })
-  @ApiResponse({ status: 201, description: 'Esporte criado com sucesso', type: Sport })
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  createSport(@Body() createSportDto: CreateSportDto): Promise<Sport> {
-    return this.matchesService.createSport(createSportDto);
-  }
-
   @Post(':matchId/participants')
   @ApiOperation({ summary: 'Adicionar um participante a uma partida' })
   @ApiResponse({ status: 201, description: 'Participante adicionado com sucesso', type: Participant })
@@ -88,18 +116,5 @@ export class MatchesController {
     @Req() req,
   ): Promise<Participant> {
     return this.matchesService.addParticipant(matchId, req.user.id, createParticipantDto);
-  }
-
-  @Put('participants/:id')
-  @ApiOperation({ summary: 'Atualizar um participante existente' })
-  @ApiResponse({ status: 200, description: 'Participante atualizado com sucesso', type: Participant })
-  @ApiResponse({ status: 404, description: 'Participante não encontrado' })
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  updateParticipant(
-    @Param('id') id: string,
-    @Body() updateParticipantDto: UpdateParticipantDto,
-  ): Promise<Participant> {
-    return this.matchesService.updateParticipant(id, updateParticipantDto);
   }
 } 

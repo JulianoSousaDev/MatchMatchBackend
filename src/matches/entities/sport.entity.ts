@@ -52,4 +52,12 @@ export class Sport {
   })
   @Column('simple-array')
   floorType: string[];
+
+  @ApiProperty({
+    description: 'Estilo de pontuação/jogo',
+    example: 'Competitivo',
+    required: false,
+  })
+  @Column({ nullable: true })
+  matchStyle: string;
 } 

@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColum
 import { ApiProperty } from '@nestjs/swagger';
 import { Sport } from './sport.entity';
 import { User } from '../../users/entities/user.entity';
+import { Participant } from './participant.entity';
 
 @Entity()
 export class Match {
@@ -42,9 +43,22 @@ export class Match {
 
   @ApiProperty({
     description: 'Local da partida',
-    example: 'Parque Central',
+    example: '{"city": "Sinop", "state": "MT", "fullAddress": "Rua Benedito Américo, Jardim Itália", "country": "Brasil", "cep": "78555321"}',
+    oneOf: [
+      { type: 'string' },
+      { 
+        type: 'object',
+        properties: {
+          city: { type: 'string' },
+          state: { type: 'string' },
+          fullAddress: { type: 'string' },
+          country: { type: 'string' },
+          cep: { type: 'string' }
+        }
+      }
+    ]
   })
-  @Column()
+  @Column('text')
   location: string;
 
   @ApiProperty({
@@ -87,11 +101,26 @@ export class Match {
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
+  @ApiProperty({
+    description: 'Esporte da partida',
+    type: () => Sport,
+  })
   @ManyToOne(() => Sport)
   @JoinColumn({ name: 'sportId' })
   sport: Sport;
 
+  @ApiProperty({
+    description: 'Criador da partida',
+    type: () => User,
+  })
   @ManyToOne(() => User)
   @JoinColumn({ name: 'creatorId' })
   creator: User;
+
+  @ApiProperty({
+    description: 'Participantes da partida',
+    type: () => [Participant],
+  })
+  @OneToMany(() => Participant, participant => participant.match)
+  participants: Participant[];
 } 
