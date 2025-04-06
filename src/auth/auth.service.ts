@@ -37,7 +37,7 @@ export class AuthService {
     
     const existingUser = await this.usersService.findOne(email);
     if (existingUser) {
-      return { success: false, message: 'Usuário já existe' };
+      return { success: false, message: 'E-mail já cadastrado' };
     }
     
     const user = await this.usersService.create(email, password, fullName);

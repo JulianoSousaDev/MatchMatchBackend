@@ -64,12 +64,12 @@ export class AuthController {
   })
   @ApiResponse({ 
     status: 400, 
-    description: 'Usuário já existe',
+    description: 'E-mail já cadastrado',
     schema: {
       type: 'object',
       properties: {
         success: { type: 'boolean', example: false },
-        message: { type: 'string', example: 'Usuário já existe' }
+        message: { type: 'string', example: 'E-mail já cadastrado' }
       }
     }
   })
