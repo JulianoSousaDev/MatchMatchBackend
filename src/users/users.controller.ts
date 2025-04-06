@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, UseGuards, Request, Put, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request, Put, HttpCode, Param, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AddFavoriteSportDto, FavoriteSportResponseDto } from './dto/favorite-sport.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -84,5 +85,48 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'Usuário não encontrado' })
   async updateProfile(@Request() req, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.updateUserProfile(req.user.id, updateUserDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('favorite-sports')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Lista os esportes favoritos do usuário' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Retorna a lista de esportes favoritos do usuário',
+    type: [FavoriteSportResponseDto]
+  })
+  @ApiResponse({ status: 401, description: 'Não autorizado' })
+  async getFavoriteSports(@Request() req) {
+    return this.usersService.getFavoriteSports(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('favorite-sports')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Adiciona um esporte aos favoritos do usuário' })
+  @ApiResponse({ 
+    status: 201, 
+    description: 'Esporte adicionado com sucesso aos favoritos',
+    type: FavoriteSportResponseDto
+  })
+  @ApiResponse({ status: 400, description: 'Este esporte já está na lista de favoritos' })
+  @ApiResponse({ status: 401, description: 'Não autorizado' })
+  @ApiResponse({ status: 404, description: 'Esporte não encontrado' })
+  async addFavoriteSport(@Request() req, @Body() addFavoriteSportDto: AddFavoriteSportDto) {
+    return this.usersService.addFavoriteSport(req.user.id, addFavoriteSportDto.sportId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('favorite-sports/:id')
+  @HttpCode(204)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Remove um esporte dos favoritos do usuário' })
+  @ApiParam({ name: 'id', description: 'ID do registro de esporte favorito', type: 'string' })
+  @ApiResponse({ status: 204, description: 'Esporte removido com sucesso dos favoritos' })
+  @ApiResponse({ status: 401, description: 'Não autorizado' })
+  @ApiResponse({ status: 404, description: 'Esporte favorito não encontrado' })
+  async removeFavoriteSport(@Request() req, @Param('id') favoriteId: string) {
+    return this.usersService.removeFavoriteSport(req.user.id, favoriteId);
   }
 } 

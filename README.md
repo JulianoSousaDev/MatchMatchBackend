@@ -57,6 +57,97 @@ A documentação completa da API está disponível em `/api` quando o servidor e
   - Aceita: `fullName`, `profileImageUrl`, `age`, `city`, `favoriteSports`, `points`
   - Retorna: informações atualizadas do perfil
 
+## Rotas para Usuários (Users)
+
+### Obter Perfil
+- **URL:** `/users/profile`
+- **Método:** `GET`
+- **Requer Auth:** Sim
+- **Resposta de Sucesso:** 
+  - **Código:** 200 OK
+  - **Conteúdo:** Dados básicos do perfil
+
+### Obter Perfil Detalhado
+- **URL:** `/users/profile/detailed`
+- **Método:** `GET`
+- **Requer Auth:** Sim
+- **Resposta de Sucesso:** 
+  - **Código:** 200 OK
+  - **Conteúdo:** Dados completos do perfil
+
+### Atualizar Perfil
+- **URL:** `/users/profile`
+- **Método:** `PUT`
+- **Requer Auth:** Sim
+- **Corpo da Requisição:** Campos a serem atualizados
+- **Resposta de Sucesso:** 
+  - **Código:** 200 OK
+  - **Conteúdo:** Perfil atualizado
+
+### Listar Esportes Favoritos
+- **URL:** `/users/favorite-sports`
+- **Método:** `GET`
+- **Requer Auth:** Sim
+- **Resposta de Sucesso:** 
+  - **Código:** 200 OK
+  - **Conteúdo:** Lista de esportes favoritos
+
+### Adicionar Esporte aos Favoritos
+- **URL:** `/users/favorite-sports`
+- **Método:** `POST`
+- **Requer Auth:** Sim
+- **Corpo da Requisição:** 
+  ```json
+  {
+    "sportId": "123e4567-e89b-12d3-a456-426614174000"
+  }
+  ```
+- **Resposta de Sucesso:** 
+  - **Código:** 201 CREATED
+  - **Conteúdo:** Detalhes do esporte favorito adicionado
+
+### Remover Esporte dos Favoritos
+- **URL:** `/users/favorite-sports/:id`
+- **Método:** `DELETE`
+- **Requer Auth:** Sim
+- **Parâmetros:**
+  - **URL:** `id` - ID do registro de esporte favorito
+- **Resposta de Sucesso:** 
+  - **Código:** 204 NO CONTENT
+
+## Rotas para Partidas (Matches)
+
+### Listar todas as partidas
+- **URL:** `/matches`
+- **Método:** `GET`
+- **Requer Auth:** Não
+- **Resposta de Sucesso:** 
+  - **Código:** 200 OK
+  - **Conteúdo:** Lista de objetos de partidas
+
+### Listar partidas de um usuário
+- **URL:** `/matches/my-matches`
+- **Método:** `GET`
+- **Requer Auth:** Sim
+- **Parâmetros (opcional):**
+  - **Query:** `status` - Array de status de participação (PENDING, CONFIRMED, CANCELLED)
+- **Resposta de Sucesso:** 
+  - **Código:** 200 OK
+  - **Conteúdo:** Lista de partidas que o usuário participa, foi convidado ou criou
+
+### Buscar partida por ID
+- **URL:** `/matches/:id`
+- **Método:** `GET`
+- **Requer Auth:** Não
+- **Parâmetros:**
+  - **URL:** `id` - ID da partida
+- **Resposta de Sucesso:** 
+  - **Código:** 200 OK
+  - **Conteúdo:** Objeto de partida
+- **Resposta de Erro:**
+  - **Código:** 404 NOT FOUND
+  - **Conteúdo:** `{ "message": "Partida com ID [id] não encontrada" }`
+
 ## Modelos de Dados
 
 ### Usuário
