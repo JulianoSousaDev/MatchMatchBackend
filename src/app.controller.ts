@@ -21,22 +21,6 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('teste')
-  @ApiOperation({ summary: 'Endpoint de teste' })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Mensagem de teste',
-    schema: {
-      type: 'object',
-      properties: {
-        message: { type: 'string', example: 'Esta é uma rota de teste do backend!' }
-      }
-    }
-  })
-  getTest(): { message: string } {
-    return { message: 'Esta é uma rota de teste do backend!' };
-  }
-
   @Get('routes')
   @ApiOperation({ summary: 'Exibe todas as rotas disponíveis na API' })
   @ApiResponse({ 
@@ -63,7 +47,6 @@ export class AppController {
     return {
       routes: [
         { path: '/', method: 'GET', description: 'Retorna uma mensagem de boas-vindas' },
-        { path: '/teste', method: 'GET', description: 'Endpoint de teste' },
         { path: '/routes', method: 'GET', description: 'Exibe todas as rotas disponíveis na API' },
         { path: '/auth/login', method: 'POST', description: 'Faz login de um usuário' },
         { path: '/auth/register', method: 'POST', description: 'Registra um novo usuário' },
