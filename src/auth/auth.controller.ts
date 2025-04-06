@@ -25,8 +25,10 @@ export class AuthController {
         user: {
           type: 'object',
           properties: {
-            id: { type: 'number', example: 1 },
-            email: { type: 'string', example: 'usuario@exemplo.com' }
+            id: { type: 'string', example: '123e4567-e89b-12d3-a456-426614174000' },
+            email: { type: 'string', example: 'usuario@exemplo.com' },
+            fullName: { type: 'string', example: 'João Silva' },
+            points: { type: 'number', example: 500 }
           }
         }
       }
@@ -50,8 +52,10 @@ export class AuthController {
         user: {
           type: 'object',
           properties: {
-            id: { type: 'number', example: 1 },
-            email: { type: 'string', example: 'usuario@exemplo.com' }
+            id: { type: 'string', example: '123e4567-e89b-12d3-a456-426614174000' },
+            email: { type: 'string', example: 'usuario@exemplo.com' },
+            fullName: { type: 'string', example: 'João Silva' },
+            points: { type: 'number', example: 500 }
           }
         }
       }
@@ -69,6 +73,6 @@ export class AuthController {
     }
   })
   async register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto.email, registerDto.password);
+    return this.authService.register(registerDto);
   }
 } 

@@ -5,11 +5,59 @@ import { ApiProperty } from '@nestjs/swagger';
 @Entity()
 export class User {
   @ApiProperty({
-    description: 'ID único do usuário',
-    example: 1,
+    description: 'ID único do usuário (UUID)',
+    example: '123e4567-e89b-12d3-a456-426614174000',
   })
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @ApiProperty({
+    description: 'Nome completo do usuário',
+    example: 'João Silva',
+  })
+  @Column({ nullable: true })
+  fullName: string;
+
+  @ApiProperty({
+    description: 'URL da foto de perfil do usuário',
+    example: 'https://exemplo.com/fotos/perfil.jpg',
+    required: false,
+  })
+  @Column({ nullable: true })
+  profileImageUrl: string;
+
+  @ApiProperty({
+    description: 'Idade do usuário',
+    example: 25,
+    required: false,
+  })
+  @Column({ nullable: true })
+  age: number;
+
+  @ApiProperty({
+    description: 'Cidade do usuário',
+    example: 'São Paulo',
+    required: false,
+  })
+  @Column({ nullable: true })
+  city: string;
+
+  @ApiProperty({
+    description: 'Lista de esportes favoritos do usuário',
+    example: ['Futebol', 'Vôlei', 'Natação'],
+    required: false,
+    type: [String],
+  })
+  @Column('simple-array', { nullable: true })
+  favoriteSports: string[];
+
+  @ApiProperty({
+    description: 'Pontuação do usuário',
+    example: 500,
+    default: 500,
+  })
+  @Column({ default: 500 })
+  points: number;
 
   @ApiProperty({
     description: 'Email do usuário',
