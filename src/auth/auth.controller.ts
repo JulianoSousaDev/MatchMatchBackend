@@ -49,6 +49,7 @@ export class AuthController {
       type: 'object',
       properties: {
         success: { type: 'boolean', example: true },
+        access_token: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
         user: {
           type: 'object',
           properties: {

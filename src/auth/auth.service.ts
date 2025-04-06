@@ -41,8 +41,17 @@ export class AuthService {
     }
     
     const user = await this.usersService.create(email, password, fullName);
+    
+    // Gerar token JWT
+    const payload = { email: user.email, sub: user.id };
+    const token = this.jwtService.sign(payload);
+    
+    // Atualiza o token de acesso do usuário no banco
+    await this.usersService.updateAccessToken(user.id, token);
+    
     return { 
-      success: true, 
+      success: true,
+      access_token: token,
       user: {
         id: user.id,
         email: user.email,
